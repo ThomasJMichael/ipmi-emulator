@@ -1,0 +1,56 @@
+[
+  {
+    "arguments": [
+      "/usr/bin/gcc",
+      "-c",
+      "-Wall",
+      "-Wextra",
+      "-std=c99",
+      "-Iinclude",
+      "-Isrc",
+      "-Ilib/unity",
+      "-o",
+      "build/test_runner",
+      "src/ipmi_common.c"
+    ],
+    "directory": "/home/jacob/projects/ipmi-emulator",
+    "file": "/home/jacob/projects/ipmi-emulator/src/ipmi_common.c",
+    "output": "/home/jacob/projects/ipmi-emulator/build/test_runner"
+  },
+  {
+    "arguments": [
+      "/usr/bin/gcc",
+      "-c",
+      "-Wall",
+      "-Wextra",
+      "-std=c99",
+      "-Iinclude",
+      "-Isrc",
+      "-Ilib/unity",
+      "-o",
+      "build/test_runner",
+      "test/test_ipmi_common.c"
+    ],
+    "directory": "/home/jacob/projects/ipmi-emulator",
+    "file": "/home/jacob/projects/ipmi-emulator/test/test_ipmi_common.c",
+    "output": "/home/jacob/projects/ipmi-emulator/build/test_runner"
+  },
+  {
+    "arguments": [
+      "/usr/bin/gcc",
+      "-c",
+      "-Wall",
+      "-Wextra",
+      "-std=c99",
+      "-Iinclude",
+      "-Isrc",
+      "-Ilib/unity",
+      "-o",
+      "build/test_runner",
+      "lib/unity/unity.c"
+    ],
+    "directory": "/home/jacob/projects/ipmi-emulator",
+    "file": "/home/jacob/projects/ipmi-emulator/lib/unity/unity.c",
+    "output": "/home/jacob/projects/ipmi-emulator/build/test_runner"
+  }
+]

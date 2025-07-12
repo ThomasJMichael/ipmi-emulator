@@ -1,5 +1,25 @@
+#ifndef IPMI_COMMON_H
+#define IPMI_COMMON_H
+
 #include <stddef.h>
 #include <stdint.h>
+#define IPMI_PACKET_MAX_BUFFER 256
+/**
+ * @brief Determines whether an IPMI message is a response based on the NetFn.
+ *
+ * IPMI NetFn (Network Function) values are encoded in the upper 6 bits
+ * of the netfn_lun byte. According to the IPMI specification:
+ *
+ * - Requests use even NetFn values.
+ * - Responses use the corresponding odd NetFn values (NetFn + 1).
+ *
+ * This macro extracts the NetFn from a netfn_lun byte and checks if it
+ * represents a response (odd NetFn).
+ *
+ * @param netfn_lun The combined NetFn and LUN byte from an IPMI message.
+ * @return 1 if the NetFn is a response (odd), 0 otherwise.
+ */
+#define IPMI_IS_RESPONSE(netfn_lun) ((((netfn_lun) >> 2) & 1) == 1)
 
 /**
  * @struct ipmi_msg_t
@@ -54,14 +74,24 @@ typedef struct {
   uint8_t cmd;
 
   /**
+   * @brief Completition code indicating the result of the command.
+   *
+   * This field is only present in IPMI response messages.
+   * The valud 0x00 indicates success. Nonzero values represent
+   * various error or status codes.
+   */
+  uint8_t completion_code;
+
+  /**
    * @brief Optional data payload for the command.
    *
    * Typically zero to ~32 bytes depending on command.
    */
-  uint8_t data[256];
+  uint8_t data[IPMI_PACKET_MAX_BUFFER];
 
   /**
-   * @brief Checksum of rq_addr, rq_seq_lun, cmd, and data.
+   * @brief Checksum of rq_addr, rq_seq_lun, optionally completion_code, cmd,
+   * and data.
    *
    * Calculated as: 0 - (rq_addr + rq_seq_lun + cmd + sum(data)).
    */
@@ -74,19 +104,6 @@ typedef struct {
 } ipmi_msg_t;
 
 /**
- * @brief Calculates the 8-bit IPMI checksum of a data buffer.
- *
- * IPMI checksums are 2's complement sums over a set of bytes such that the
- * total sum including the checksum equals 0. This is used in both header and
- * body of IPMI/IPMB messages.
- *
- * @param data Pointer to the byte buffer to checksum.
- * @param len Number of bytes in the buffer.
- * @return 8-bit checksum value that should follow the input bytes.
- */
-uint8_t calc_checksum(uint8_t *data, size_t len);
-
-/**
  * @brief Validates both checksums in a given IPMI message.
  *
  * Performs IPMB checksum verification on both the header section
@@ -97,6 +114,7 @@ uint8_t calc_checksum(uint8_t *data, size_t len);
  * @return 0 if both checksums are valid,
  *         -1 if the header checksum is invalid,
  *         -2 if the body checksum is invalid.
+ *         -3 if the data length is invalid.
  */
 int validate_ipmi_checksum(ipmi_msg_t *msg);
 
@@ -113,6 +131,7 @@ int validate_ipmi_checksum(ipmi_msg_t *msg);
  * @param data Pointer to the response data buffer (can be NULL if no payload).
  * @param data_len Length of the response data.
  */
-void build_ipmi_response(const ipmi_msg_t *req, ipmi_msg_t *resp,
-                         uint8_t completion_code, const uint8_t *data,
-                         size_t data_len);
+int build_ipmi_response(const ipmi_msg_t *req, ipmi_msg_t *resp,
+                        uint8_t completion_code, const uint8_t *data,
+                        size_t data_len);
+#endif // IPMI_COMMON_H

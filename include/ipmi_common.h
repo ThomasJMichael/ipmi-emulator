@@ -4,22 +4,6 @@
 #include <stddef.h>
 #include <stdint.h>
 #define IPMI_PACKET_MAX_BUFFER 256
-/**
- * @brief Determines whether an IPMI message is a response based on the NetFn.
- *
- * IPMI NetFn (Network Function) values are encoded in the upper 6 bits
- * of the netfn_lun byte. According to the IPMI specification:
- *
- * - Requests use even NetFn values.
- * - Responses use the corresponding odd NetFn values (NetFn + 1).
- *
- * This macro extracts the NetFn from a netfn_lun byte and checks if it
- * represents a response (odd NetFn).
- *
- * @param netfn_lun The combined NetFn and LUN byte from an IPMI message.
- * @return 1 if the NetFn is a response (odd), 0 otherwise.
- */
-#define IPMI_IS_RESPONSE(netfn_lun) ((((netfn_lun) >> 2) & 1) == 1)
 
 /**
  * @struct ipmi_msg_t

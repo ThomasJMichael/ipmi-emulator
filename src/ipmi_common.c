@@ -1,5 +1,6 @@
 #include "ipmi_common.h"
 #include "ipmi_common_internal.h"
+#include "ipmi_netfn.h"
 #include <stdio.h>
 #include <string.h>
 
